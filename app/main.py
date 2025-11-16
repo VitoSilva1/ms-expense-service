@@ -6,6 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.exc import OperationalError
 
 from app.core.database import Base, engine
+from app.models.expense_model import Expense
 from app.routers import expense_router
 
 
@@ -37,7 +38,7 @@ def create_tables():
     retries = 5
     while retries:
         try:
-            Base.metadata.create_all(bind=engine)
+            Base.metadata.create_all(bind=engine, tables=[Expense.__table__])
             break
         except OperationalError:
             retries -= 1

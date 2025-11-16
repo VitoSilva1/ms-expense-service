@@ -1,7 +1,7 @@
 from datetime import datetime
 from enum import Enum
 
-from sqlalchemy import Boolean, Column, DateTime, Enum as SqlEnum, Integer, Numeric, String, Text
+from sqlalchemy import Boolean, Column, DateTime, Enum as SqlEnum, ForeignKey, Integer, Numeric, String, Text
 from app.core.database import Base
 
 
@@ -24,11 +24,18 @@ class ExpenseStatus(str, Enum):
     POSTED = "posted"
 
 
+class User(Base):
+    __tablename__ = "users"
+    __table_args__ = {"extend_existing": True}
+
+    id = Column(Integer, primary_key=True, index=True)
+
+
 class Expense(Base):
     __tablename__ = "expenses"
 
     id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(Integer, nullable=False, index=True)
+    user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
     category = Column(SqlEnum(ExpenseCategory), nullable=False, default=ExpenseCategory.OTHER)
     description = Column(String(255))
     notes = Column(Text)
