@@ -1,7 +1,7 @@
 from datetime import datetime
 from enum import Enum
 
-from sqlalchemy import Boolean, Column, DateTime, Enum as SqlEnum, ForeignKey, Integer, Numeric, String, Text
+from sqlalchemy import Boolean, Column, DateTime, Enum as SqlEnum, ForeignKey, Integer, Numeric, String
 from app.core.database import Base
 
 
@@ -38,9 +38,8 @@ class Expense(Base):
     user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
     category = Column(SqlEnum(ExpenseCategory), nullable=False, default=ExpenseCategory.OTHER)
     description = Column(String(255))
-    notes = Column(Text)
     amount = Column(Numeric(12, 2), nullable=False)
-    currency = Column(String(3), nullable=False, default="USD")
+    installments = Column(Integer, nullable=True)
     payment_method = Column(String(50))
     status = Column(SqlEnum(ExpenseStatus), nullable=False, default=ExpenseStatus.POSTED)
     transaction_date = Column(DateTime, nullable=False, default=datetime.utcnow)
