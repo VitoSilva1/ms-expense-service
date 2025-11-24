@@ -6,7 +6,14 @@ from sqlalchemy.orm import Session
 
 from app.core.database import get_db
 from app.models.expense_model import ExpenseCategory
-from app.schemas.expense_schema import ExpenseCreate, ExpenseResponse, ExpenseSummary, ExpenseUpdate
+from app.schemas.expense_schema import (
+    ExpenseBatchCreate,
+    ExpenseBatchResponse,
+    ExpenseCreate,
+    ExpenseResponse,
+    ExpenseSummary,
+    ExpenseUpdate,
+)
 from app.services import expense_service
 
 router = APIRouter(prefix="/expenses", tags=["Expenses"])
@@ -15,6 +22,11 @@ router = APIRouter(prefix="/expenses", tags=["Expenses"])
 @router.post("/", response_model=ExpenseResponse, status_code=status.HTTP_201_CREATED)
 def create_expense(expense_in: ExpenseCreate, db: Session = Depends(get_db)):
     return expense_service.create_expense(db, expense_in)
+
+
+@router.post("/bulk", response_model=ExpenseBatchResponse, status_code=status.HTTP_201_CREATED)
+def create_expenses_bulk(payload: ExpenseBatchCreate, db: Session = Depends(get_db)):
+    return expense_service.create_expenses_batch(db, payload)
 
 
 @router.get("/", response_model=list[ExpenseResponse])
